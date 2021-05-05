@@ -246,24 +246,31 @@ public class AudioPlayer implements MethodCallHandler, Player.EventListener, Aud
 
     @Override
     public void onPlayerError(ExoPlaybackException error) {
+        String message;
         switch (error.type) {
         case ExoPlaybackException.TYPE_SOURCE:
-            Log.e(TAG, "TYPE_SOURCE: " + error.getSourceException().getMessage());
+            message = error.getSourceException().getMessage();
+            Log.e(TAG, "TYPE_SOURCE: " + message);
             break;
 
         case ExoPlaybackException.TYPE_RENDERER:
-            Log.e(TAG, "TYPE_RENDERER: " + error.getRendererException().getMessage());
+            message = error.getRendererException().getMessage();
+            Log.e(TAG, "TYPE_RENDERER: " + message);
             break;
 
         case ExoPlaybackException.TYPE_UNEXPECTED:
-            Log.e(TAG, "TYPE_UNEXPECTED: " + error.getUnexpectedException().getMessage());
+            message = error.getUnexpectedException().getMessage();
+            Log.e(TAG, "TYPE_UNEXPECTED: " + message);
             break;
 
         default:
-            Log.e(TAG, "default: " + error.getUnexpectedException().getMessage());
+            message = error.getUnexpectedException().getMessage();
+            Log.e(TAG, "default: " + message);
         }
-        sendError(String.valueOf(error.type), error.getMessage());
+
+        sendError(String.valueOf(error.type), error.getMessage() + " - " + message);
         errorCount++;
+
         if (player.hasNext() && currentIndex != null && errorCount <= 5) {
             int nextIndex = currentIndex + 1;
             Timeline timeline = player.getCurrentTimeline();
